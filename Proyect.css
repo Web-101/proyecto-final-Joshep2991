@@ -1,9 +1,9 @@
-<<<<<<< HEAD
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
+}   
 
 body {
     background-color: #0f1115;
@@ -88,95 +88,5 @@ body {
 .nav-inferior .activo {
     color: #ffffff;
     font-weight: bold;
-=======
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
-body {
-    background-color: #0f1115;
-    color: #ffffff;
-    font-family: Arial, Helvetica, sans-serif;
-    padding-bottom: 70px;
-}
-
-.cabecera {
-    padding: 20px;
-}
-
-.cabecera h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-.subtitulo {
-    font-size: 14px;
-    color: #cccccc;
-    margin-bottom: 10px;
-}
-
-.caja-filtro {
-    background-color: #2a2a2a;
-    padding: 15px;
-    border-radius: 10px;
-}
-
-.grid-peliculas {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 15px;
-    padding: 20px;
-}
-
-.card {
-    position: relative;
-    text-align: center;
-}
-
-.card img {
-    width: 100%;
-    aspect-ratio: 2/3;
-    object-fit: cover;
-    border-radius: 5px;
-}
-
-.card h3 {
-    font-size: 12px;
-    margin-top: 5px;
-}
-
-.etiqueta {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    background-color: orange;
-    color: black;
-    font-size: 10px;
-    padding: 2px 5px;
-    font-weight: bold;
-}
-
-.nav-inferior {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: #1a1a1a;
-    display: flex;
-    justify-content: space-around;
-    padding: 15px 0;
-    border-top: 1px solid #333;
-}
-
-.nav-inferior a {
-    color: #888;
-    text-decoration: none;
-    font-size: 12px;
-}
-
-.nav-inferior .activo {
-    color: #ffffff;
-    font-weight: bold;
->>>>>>> f9174e36d270bf0a38595c1349bd3a2ce88c5cd2
 }

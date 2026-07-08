@@ -8,38 +8,14 @@
 <body>
 
     <header class="cabecera-detalle">
-        <a href="Detalle.html" class="boton-volver">Atras</a>
+        <a href="Detalle.html" class="boton-volver" id="volverDetalle">Atras</a>
         <h2>Elige tu asiento</h2>
     </header>
 
     <main class="contenedor-asientos">
         <div class="pantalla-cine">PANTALLA</div>
 
-        <div class="grid-asientos">
-            <div class="asiento ocupado"></div>
-            <div class="asiento"></div>
-            <div class="asiento"></div>
-            <div class="asiento ocupado"></div>
-            <div class="asiento"></div>
-            
-            <div class="asiento"></div>
-            <div class="asiento seleccionado"></div>
-            <div class="asiento seleccionado"></div>
-            <div class="asiento"></div>
-            <div class="asiento"></div>
-
-            <div class="asiento ocupado"></div>
-            <div class="asiento ocupado"></div>
-            <div class="asiento"></div>
-            <div class="asiento"></div>
-            <div class="asiento ocupado"></div>
-
-            <div class="asiento"></div>
-            <div class="asiento"></div>
-            <div class="asiento"></div>
-            <div class="asiento"></div>
-            <div class="asiento"></div>
-        </div>
+        <div id="gridAsientos" class="grid-asientos"></div>
 
         <div class="leyenda">
             <div class="item-leyenda"><div class="cuadro libre"></div> Libre</div>
@@ -47,8 +23,101 @@
             <div class="item-leyenda"><div class="cuadro seleccionado-color"></div> Tu eleccion</div>
         </div>
 
-        <a href="#" class="boton-pagar">Proceder al Pago</a>
+        <a href="#" class="boton-pagar" id="btnPagar">Proceder al Pago</a>
     </main>
 
+    <script src="datos.js"></script>
+    <script>
+        // Leer el id de la URL
+        var params = new URLSearchParams(window.location.search);
+        var id = parseInt(params.get('id'));
+        var pelicula = peliculas[id];
+
+        if (!pelicula) {
+            window.location.href = 'Proyect.html';
+        }
+
+        // Configurar el enlace de "Atras" para que vuelva al detalle de esta pelicula
+        document.getElementById('volverDetalle').href = 'Detalle.html?id=' + id;
+
+        // Dimensiones de la sala (filas x columnas)
+        var filas = 5;
+        var columnas = 6;
+
+        // Inicializar matriz de asientos: 0=libre, 1=ocupado, 2=seleccionado
+        var asientos = [];
+
+        // Llenar la matriz con algunos ocupados aleatorios (alrededor del 30%)
+        for (var f = 0; f < filas; f++) {
+            asientos[f] = [];
+            for (var c = 0; c < columnas; c++) {
+                // Probabilidad de ocupado: 0.3
+                var ocupado = Math.random() < 0.3;
+                asientos[f][c] = ocupado ? 1 : 0;
+            }
+        }
+
+        // Referencia al contenedor
+        var grid = document.getElementById('gridAsientos');
+
+        // Funcion para renderizar la matriz
+        function renderizarAsientos() {
+            grid.innerHTML = '';
+            for (var f = 0; f < filas; f++) {
+                for (var c = 0; c < columnas; c++) {
+                    var div = document.createElement('div');
+                    div.className = 'asiento';
+                    var estado = asientos[f][c];
+                    if (estado === 1) {
+                        div.classList.add('ocupado');
+                    } else if (estado === 2) {
+                        div.classList.add('seleccionado');
+                    }
+                    // Guardar coordenadas como atributos para el click
+                    div.dataset.fila = f;
+                    div.dataset.columna = c;
+                    div.addEventListener('click', manejarClick);
+                    grid.appendChild(div);
+                }
+            }
+        }
+
+        // Manejar el click en un asiento
+        function manejarClick(e) {
+            var div = e.currentTarget;
+            var f = parseInt(div.dataset.fila);
+            var c = parseInt(div.dataset.columna);
+            var estado = asientos[f][c];
+
+            if (estado === 1) return; // Ocupado, no se puede tocar
+
+            if (estado === 0) {
+                asientos[f][c] = 2; // Seleccionar
+            } else if (estado === 2) {
+                asientos[f][c] = 0; // Deseleccionar
+            }
+            renderizarAsientos(); // Re-dibujar
+        }
+
+        // Renderizar inicial
+        renderizarAsientos();
+
+        // Boton de pago (por ahora solo muestra un mensaje)
+        document.getElementById('btnPagar').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Contar cuantos seleccionados
+            var seleccionados = 0;
+            for (var f = 0; f < filas; f++) {
+                for (var c = 0; c < columnas; c++) {
+                    if (asientos[f][c] === 2) seleccionados++;
+                }
+            }
+            if (seleccionados === 0) {
+                alert('Selecciona al menos un asiento.');
+            } else {
+                alert('Has seleccionado ' + seleccionados + ' asiento(s). (Pago no implementado)');
+            }
+        });
+    </script>
 </body>
 </html>

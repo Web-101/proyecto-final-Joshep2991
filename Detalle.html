@@ -13,21 +13,34 @@
     </header>
 
     <main class="contenedor-info">
-        <img src="Imagenes Peliculas/Dolly.png" alt="Dolly" class="imagen-principal">
-        
+        <img id="imgPelicula" src="" alt="" class="imagen-principal">
         <div class="textos-pelicula">
-            <h1>Dolly</h1>
-            <p class="genero">Terror / Suspenso | 1h 45m</p>
-            
+            <h1 id="tituloPelicula"></h1>
+            <p id="generoPelicula" class="genero"></p>
             <h3>Sinopsis</h3>
-            <p class="sinopsis">
-                Una muñeca antigua llega a una casa y empiezan a ocurrir cosas extrañas. 
-                Nadie sabe de donde vino, pero todos corren peligro.
-            </p>
+            <p id="sinopsisPelicula" class="sinopsis"></p>
         </div>
-
-        <a href="Asientos.html" class="boton-comprar">Seleccionar Asientos</a>
+        <a id="btnAsientos" href="#" class="boton-comprar">Seleccionar Asientos</a>
     </main>
 
+    <script src="datos.js"></script>
+    <script>
+        // Leer el id de la URL
+        var params = new URLSearchParams(window.location.search);
+        var id = parseInt(params.get('id'));
+        var pelicula = peliculas[id];
+
+        if (pelicula) {
+            document.getElementById('imgPelicula').src = pelicula.imagen;
+            document.getElementById('imgPelicula').alt = pelicula.titulo;
+            document.getElementById('tituloPelicula').textContent = pelicula.titulo;
+            document.getElementById('generoPelicula').textContent = pelicula.genero + ' | ' + pelicula.duracion;
+            document.getElementById('sinopsisPelicula').textContent = pelicula.sinopsis;
+            document.getElementById('btnAsientos').href = 'Asientos.html?id=' + id;
+        } else {
+            // Si no existe, redirigir a la cartelera
+            window.location.href = 'Proyect.html';
+        }
+    </script>
 </body>
 </html>

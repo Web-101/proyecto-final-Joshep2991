@@ -1,0 +1,93 @@
+// datos.js
+var peliculas = [
+    {
+        id: 0,
+        titulo: "Dolly",
+        genero: "Terror / Suspenso",
+        duracion: "1h 45m",
+        sinopsis: "Una muneca antigua llega a una casa y empiezan a ocurrir cosas extranas. Nadie sabe de donde vino, pero todos corren peligro.",
+        imagen: "Imagenes Peliculas/Dolly.png",
+        estreno: true
+    },
+    {
+        id: 1,
+        titulo: "La Revelacion",
+        genero: "Misterio / Drama",
+        duracion: "2h 10m",
+        sinopsis: "Un sacerdote descubre un secreto oculto en los archivos del Vaticano que podria cambiar la fe de la humanidad.",
+        imagen: "Imagenes Peliculas/La Revelacion.png",
+        estreno: true
+    },
+    {
+        id: 2,
+        titulo: "Zona",
+        genero: "Ciencia Ficcion / Accion",
+        duracion: "1h 55m",
+        sinopsis: "En una zona restringida del espacio, un grupo de exploradores encuentra una anomalia que desafia las leyes de la fisica.",
+        imagen: "Imagenes Peliculas/Zona.png",
+        estreno: true
+    },
+    {
+        id: 3,
+        titulo: "Amos del Universo",
+        genero: "Fantasia / Aventura",
+        duracion: "2h 20m",
+        sinopsis: "Un guerrero debe enfrentar a las fuerzas del mal para restaurar el equilibrio en el universo.",
+        imagen: "Imagenes Peliculas/Amos del Universo.png",
+        estreno: false
+    },
+    {
+        id: 4,
+        titulo: "Backrooms",
+        genero: "Terror / Psicologico",
+        duracion: "1h 30m",
+        sinopsis: "Un hombre queda atrapado en un laberinto de habitaciones infinitas mientras intenta escapar de una entidad desconocida.",
+        imagen: "Imagenes Peliculas/Backrooms.png",
+        estreno: false
+    },
+    {
+        id: 5,
+        titulo: "El Diablo viste a la Moda",
+        genero: "Comedia / Drama",
+        duracion: "1h 50m",
+        sinopsis: "Una joven aspirante a disenadora descubre que su jefe es en realidad el diablo, pero con mucho estilo.",
+        imagen: "Imagenes Peliculas/El Diablo viste a la Moda.png",
+        estreno: false
+    },
+    {
+        id: 6,
+        titulo: "Michael",
+        genero: "Biografia / Musical",
+        duracion: "2h 15m",
+        sinopsis: "La vida y carrera del rey del pop, desde sus inicios hasta su consagracion como leyenda.",
+        imagen: "Imagenes Peliculas/Michael.png",
+        estreno: false
+    },
+    {
+        id: 7,
+        titulo: "Scary Movie",
+        genero: "Comedia / Terror",
+        duracion: "1h 28m",
+        sinopsis: "Un grupo de adolescentes se enfrenta a una serie de sucesos paranormales con mucho humor y situaciones absurdas.",
+        imagen: "Imagenes Peliculas/Scary Movie.png",
+        estreno: false
+    },
+    {
+        id: 8,
+        titulo: "Mandalorian",
+        genero: "Ciencia Ficcion / Accion",
+        duracion: "2h 00m",
+        sinopsis: "Un cazarrecompensas solitario recorre la galaxia protegiendo a un joven de la especie de Yoda.",
+        imagen: "Imagenes Peliculas/Mandalorian.png",
+        estreno: false
+    },
+    {
+        id: 9,
+        titulo: "Super Mario",
+        genero: "Animacion / Aventura",
+        duracion: "1h 32m",
+        sinopsis: "Dos hermanos plomeros son transportados a un mundo fantastico donde deben salvar a una princesa.",
+        imagen: "Imagenes Peliculas/Super Mario.png",
+        estreno: false
+    }
+];

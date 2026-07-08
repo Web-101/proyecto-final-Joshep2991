@@ -43,35 +43,38 @@ body {
     color: #888;
 }
 
-/* El Grid Layout que pide el ingeniero */
 .grid-asientos {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr); /* 6 columnas */
     gap: 15px;
     margin-bottom: 30px;
+    width: 100%;
+    max-width: 400px;
 }
 
 .asiento {
     width: 40px;
     height: 40px;
-    background-color: #444; /* Asiento libre */
-    border-radius: 8px 8px 4px 4px; /* Forma de sillita */
+    background-color: #444; /* libre */
+    border-radius: 8px 8px 4px 4px;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .ocupado {
-    background-color: #b91c1c; /* Rojo */
+    background-color: #b91c1c;
     cursor: not-allowed;
 }
 
 .seleccionado {
-    background-color: #7c3aed; /* Morado */
+    background-color: #7c3aed;
 }
 
 .leyenda {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    max-width: 400px;
     margin-bottom: 30px;
     font-size: 12px;
 }
@@ -98,7 +101,16 @@ body {
     text-decoration: none;
     padding: 15px;
     width: 100%;
+    max-width: 400px;
     text-align: center;
     border-radius: 8px;
     font-weight: bold;
+    display: block;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.boton-pagar:hover {
+    background-color: #0284c7;
 }
