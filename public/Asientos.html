@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Asientos</title>
+    <link rel="stylesheet" href="Asientos.css">
+</head>
+<body>
+    <header class="cabecera-detalle">
+        <a href="Detalle.html" class="boton-volver" id="volverDetalle">Atras</a>
+        <h2>Elige tu asiento</h2>
+    </header>
+
+    <main class="contenedor-asientos">
+        <div class="pantalla-cine">PANTALLA</div>
+        <div id="gridAsientos" class="grid-asientos"></div>
+
+        <div class="leyenda">
+            <div class="item-leyenda"><div class="cuadro libre"></div> Libre</div>
+            <div class="item-leyenda"><div class="cuadro ocupado-color"></div> Ocupado</div>
+            <div class="item-leyenda"><div class="cuadro seleccionado-color"></div> Tu eleccion</div>
+        </div>
+
+        <button id="btnPagar" class="boton-pagar">Proceder al Pago</button>
+    </main>
+
+    <script>
+        var params = new URLSearchParams(window.location.search);
+        var idPeli = parseInt(params.get('id'));
+
+        if (isNaN(idPeli)) {
+            window.location.href = 'Proyect.html';
+        }
+
+        document.getElementById('volverDetalle').href = 'Detalle.html?id=' + idPeli;
+
+        var matriz = [];
+        var filas = 5;
+        var columnas = 6;
+
+        function renderizar() {
+            var grid = document.getElementById('gridAsientos');
+            grid.innerHTML = '';
+            for (var f = 0; f < filas; f++) {
+                for (var c = 0; c < columnas; c++) {
+                    var div = document.createElement('div');
+                    div.className = 'asiento';
+                    var estado = matriz[f][c];
+                    if (estado === 1) div.classList.add('ocupado');
+                    else if (estado === 2) div.classList.add('seleccionado');
+                    div.dataset.fila = f;
+                    div.dataset.columna = c;
+                    div.addEventListener('click', manejarClick);
+                    grid.appendChild(div);
+                }
+            }
+        }
+
+        function manejarClick(e) {
+            var div = e.currentTarget;
+            var f = parseInt(div.dataset.fila);
+            var c = parseInt(div.dataset.columna);
+            var estado = matriz[f][c];
+            if (estado === 1) return;
+            if (estado === 0) matriz[f][c] = 2;
+            else if (estado === 2) matriz[f][c] = 0;
+            renderizar();
+        }
+
+        fetch('/api/asientos/' + idPeli)
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.error) throw new Error(data.error);
+                matriz = data.matriz;
+                renderizar();
+            })
+            .catch(function(e) {
+                console.error('Error:', e);
+                alert('No se pudieron cargar los asientos');
+                window.location.href = 'Proyect.html';
+            });
+
+        document.getElementById('btnPagar').addEventListener('click', function() {
+            var seleccionados = [];
+            for (var f = 0; f < filas; f++) {
+                for (var c = 0; c < columnas; c++) {
+                    if (matriz[f][c] === 2) {
+                        seleccionados.push({ fila: f, columna: c });
+                    }
+                }
+            }
+
+            if (seleccionados.length === 0) {
+                alert('Selecciona al menos un asiento.');
+                return;
+            }
+
+            fetch('/api/reservar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    idPelicula: idPeli,
+                    asientos: seleccionados
+                })
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                } else {
+                    alert('Reserva exitosa! ' + seleccionados.length + ' asiento(s).');
+                    matriz = data.matriz;
+                    renderizar();
+                }
+            })
+            .catch(function(e) {
+                console.error('Error:', e);
+                alert('Error de conexion.');
+            });
+        });
+    </script>
+</body>
+</html>

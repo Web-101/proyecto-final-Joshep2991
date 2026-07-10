@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle</title>
+    <link rel="stylesheet" href="Detalle.css">
+</head>
+<body>
+    <header class="cabecera-detalle">
+        <a href="Proyect.html" class="boton-volver">Atras</a>
+    </header>
+    <main class="contenedor-info">
+        <img id="imgPeli" class="imagen-principal" src="" alt="">
+        <div class="textos-pelicula">
+            <h1 id="tituloPeli"></h1>
+            <p id="generoPeli" class="genero"></p>
+            <h3>Sinopsis</h3>
+            <p id="sinopsisPeli" class="sinopsis"></p>
+        </div>
+        <a id="btnComprar" href="#" class="boton-comprar">Comprar Entrada</a>
+    </main>
+    <script>
+        var params = new URLSearchParams(window.location.search);
+        var id = parseInt(params.get('id'));
+
+        if(isNaN(id)) window.location.href = 'Proyect.html';
+
+        fetch('/api/peliculas/' + id)
+            .then(function(res) { return res.json(); })
+            .then(function(peli) {
+                if(peli.error) throw new Error(peli.error);
+                document.getElementById('imgPeli').src = peli.imagen;
+                document.getElementById('tituloPeli').textContent = peli.titulo;
+                document.getElementById('generoPeli').textContent = peli.genero + ' | ' + peli.duracion;
+                document.getElementById('sinopsisPeli').textContent = peli.sinopsis;
+                document.getElementById('btnComprar').href = 'Asientos.html?id=' + id;
+            })
+            .catch(function() { window.location.href = 'Proyect.html'; });
+    </script>
+</body>
+</html>
