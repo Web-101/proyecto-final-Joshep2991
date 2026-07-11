@@ -1,38 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cartelera</title>
-<link rel="stylesheet" href="Proyect.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartelera</title>
+    <link rel="stylesheet" href="Proyect.css">
 </head>
 <body>
-<header class="cabecera">
-<h1>Cartelera</h1>
-</header>
-<main>
-<div id="contenedorPeliculas" class="grid-peliculas"></div>
-</main>
-<script>
-fetch('/api/peliculas')
-.then(function(res) { return res.json(); })
-.then(function(datos) {
-    var caja = document.getElementById('contenedorPeliculas');
-    datos.forEach(function(peli) {
-        var div = document.createElement('div');
-        div.className = 'tarjeta';
-        div.onclick = function() {
-            window.location.href = 'Funciones.html?id=' + peli.id;
-        };
-        var img = document.createElement('img');
-        img.src = peli.imagen;
-        var tit = document.createElement('h3');
-        tit.textContent = peli.titulo;
-        div.appendChild(img);
-        div.appendChild(tit);
-        caja.appendChild(div);
-    });
-});
-</script>
+    <header class="cabecera">
+        <h1>Cartelera</h1>
+    </header>
+    <main>
+        <div id="contenedorPeliculas" class="grid-peliculas"></div>
+    </main>
+    <script>
+        fetch('/api/peliculas')
+            .then(function(res) { 
+                if (!res.ok) throw new Error('Error al conectar con la API');
+                return res.json(); 
+            })
+            .then(function(datos) {
+                var caja = document.getElementById('contenedorPeliculas');
+                caja.innerHTML = ''; // Limpiar por si acaso
+                
+                datos.forEach(function(peli) {
+                    var div = document.createElement('div');
+                    div.className = 'tarjeta';
+                    
+                    // Aseguramos que lea bien cualquier ID, incluido el 0 de Dolly
+                    div.onclick = function() {
+                        window.location.href = 'Funciones.html?id=' + peli.id;
+                    };
+                    
+                    var img = document.createElement('img');
+                    img.src = peli.imagen;
+                    img.alt = peli.titulo;
+                    
+                    var tit = document.createElement('h3');
+                    tit.textContent = peli.titulo;
+                    
+                    div.appendChild(img);
+                    div.appendChild(tit);
+                    caja.appendChild(div);
+                });
+            })
+            .catch(function(err) {
+                console.error("No se pudieron cargar las películas:", err);
+                document.getElementById('contenedorPeliculas').innerHTML = '<p style="color:white; text-align:center; width:100%;">Error al cargar la cartelera. Revisa la consola.</p>';
+            });
+    </script>
 </body>
 </html>

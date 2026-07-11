@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmar Compra</title>
+    <link rel="stylesheet" href="Proyect.css">
+</head>
+<body>
+    <header class="cabecera">
+        <a href="Proyect.html" class="btn-volver">Inicio</a>
+        <h1>Resumen de Compra</h1>
+    </header>
+    <main style="padding: 20px; color: white; text-align: center;">
+        <div id="detalleCompra" style="max-width: 450px; margin: 40px auto; background: #1a1a1a; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+            <h2 id="infoPeli" style="margin-bottom: 15px; color: #e50914;">Cargando reserva...</h2>
+            <p id="infoHora" style="margin: 10px 0; font-size: 1.1em;"></p>
+            <p id="infoAsientos" style="margin: 10px 0; font-size: 1.1em;"></p>
+            <p id="infoTotal" style="margin: 20px 0; font-weight: bold; font-size: 1.3em; color: #46b450;"></p>
+            <button id="btnConfirmar" class="btn-accion" style="margin-top: 15px; padding: 12px 25px; background: #e50914; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; font-weight: bold; width: 100%;">Finalizar Compra</button>
+        </div>
+    </main>
+    <script>
+        var reservaStr = localStorage.getItem('reserva');
+        if (!reservaStr) {
+            window.location.href = 'Proyect.html';
+        }
+        var reserva = JSON.parse(reservaStr);
+
+        document.getElementById('infoHora').textContent = 'Horario seleccionado: ' + reserva.hora;
+        document.getElementById('infoAsientos').textContent = 'Asientos: ' + reserva.asientos.map(function(x) { return x.n; }).join(', ');
+        document.getElementById('infoTotal').textContent = 'Total a pagar: ' + reserva.total + ' Bs';
+
+        fetch('/api/peliculas/' + reserva.id)
+            .then(function(res) { return res.json(); })
+            .then(function(peli) {
+                document.getElementById('infoPeli').textContent = peli.titulo;
+            });
+
+        document.getElementById('btnConfirmar').onclick = function() {
+            fetch('/api/tickets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    idPelicula: reserva.id,
+                    horario: reserva.hora,
+                    asientos: reserva.asientos
+                })
+            }).then(function() {
+                return fetch('/api/reservar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        idPelicula: reserva.id,
+                        horario: reserva.hora,
+                        asientos: reserva.asientos
+                    })
+                });
+            }).then(function() {
+                alert('¡Compra realizada con éxito!');
+                localStorage.removeItem('reserva');
+                window.location.href = 'Proyect.html';
+            }).catch(function() {
+                alert('Hubo un error al procesar tu compra.');
+            });
+        };
+    </script>
+</body>
+</html>

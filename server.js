@@ -33,12 +33,12 @@ function guardarJSON(nombre, obj) {
     fs.writeFileSync(ruta, JSON.stringify(obj, null, 4), 'utf8');
 }
 
-function obtenerAsientos(idPeli) {
+function obtenerAsientos(clave) {
     var todos = leerJSON('asientos.json') || {};
-    var m = todos[idPeli];
+    var m = todos[clave];
     if (!m) {
-        var filas = 5;
-        var cols = 6;
+        var filas = 8;
+        var cols = 8;
         m = [];
         for (var f = 0; f < filas; f++) {
             m[f] = [];
@@ -46,17 +46,17 @@ function obtenerAsientos(idPeli) {
                 m[f][c] = Math.random() < 0.3 ? 1 : 0;
             }
         }
-        todos[idPeli] = m;
+        todos[clave] = m;
         guardarJSON('asientos.json', todos);
     }
     return m;
 }
 
-function actualizarAsientos(idPeli, lista) {
+function actualizarAsientos(clave, lista) {
     var todos = leerJSON('asientos.json') || {};
-    var m = todos[idPeli];
+    var m = todos[clave];
     if (!m) {
-        m = obtenerAsientos(idPeli);
+        m = obtenerAsientos(clave);
     }
     lista.forEach(function(item) {
         var f = item.fila;
@@ -65,7 +65,7 @@ function actualizarAsientos(idPeli, lista) {
             m[f][c] = 1;
         }
     });
-    todos[idPeli] = m;
+    todos[clave] = m;
     guardarJSON('asientos.json', todos);
     return m;
 }
@@ -102,7 +102,7 @@ var servidor = http.createServer(function(req, res) {
             var id = parseInt(ruta.split('/').pop());
             var todas = leerJSON('peliculas.json');
             if (todas) {
-                var peli = todas.find(function(p) { return p.id === id; });
+                var peli = todas.find(function(p) { return p.id == id; });
                 if (peli) {
                     res.writeHead(200);
                     res.end(JSON.stringify(peli));
@@ -119,7 +119,9 @@ var servidor = http.createServer(function(req, res) {
 
         if (ruta.startsWith('/api/asientos/') && req.method === 'GET') {
             var idPeli = parseInt(ruta.split('/').pop());
-            var m = obtenerAsientos(idPeli);
+            var horario = parsed.query.horario || '19:00';
+            var clave = idPeli + '-' + horario;
+            var m = obtenerAsientos(clave);
             res.writeHead(200);
             res.end(JSON.stringify({ matriz: m }));
             return;
@@ -172,13 +174,16 @@ var servidor = http.createServer(function(req, res) {
                 try {
                     var data = JSON.parse(cuerpo);
                     var idPeli = data.idPelicula;
+                    var horario = data.horario || '19:00';
+                    var clave = idPeli + '-' + horario;
                     var asientos = data.asientos;
+                    
                     if (idPeli === undefined || !Array.isArray(asientos)) {
                         res.writeHead(400);
                         res.end(JSON.stringify({ error: 'datos invalidos' }));
                         return;
                     }
-                    var nueva = actualizarAsientos(idPeli, asientos);
+                    var nueva = actualizarAsientos(clave, asientos);
                     res.writeHead(200);
                     res.end(JSON.stringify({ mensaje: 'ok', matriz: nueva }));
                 } catch (e) {

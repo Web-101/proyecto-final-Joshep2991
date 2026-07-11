@@ -21,9 +21,16 @@
     </main>
     <script>
         var params = new URLSearchParams(window.location.search);
-        var id = parseInt(params.get('id'));
+        var idStr = params.get('id');
 
-        if(isNaN(id)) window.location.href = 'Proyect.html';
+        if (idStr === null || idStr === "") {
+            window.location.href = 'Proyect.html';
+        }
+
+        var id = parseInt(idStr);
+        if (isNaN(id)) {
+            window.location.href = 'Proyect.html';
+        }
 
         fetch('/api/peliculas/' + id)
             .then(function(res) { return res.json(); })

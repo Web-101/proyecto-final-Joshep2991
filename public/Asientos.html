@@ -1,95 +1,110 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Asientos</title>
-<link rel="stylesheet" href="Proyect.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asientos</title>
+    <link rel="stylesheet" href="Proyect.css">
 </head>
 <body>
-<header class="cabecera">
-<button id="btnVolver" class="btn-volver">Volver</button>
-<h1>Sala</h1>
-</header>
-<main class="contenedor-sala">
-<div class="pantalla">PANTALLA</div>
-<div id="cajaAsientos" class="grilla-asientos"></div>
-<div class="resumen">
-<p id="textoAsientos">Ninguno</p>
-<p id="textoTotal">Total: 0 Bs</p>
-</div>
-<button id="btnSiguiente" class="btn-accion" style="display:none;">Continuar</button>
-</main>
-<script>
-var params = new URLSearchParams(window.location.search);
-var id = params.get('id');
-var hora = params.get('hora');
-document.getElementById('btnVolver').onclick = function() {
-    window.location.href = 'Funciones.html?id=' + id;
-};
+    <header class="cabecera">
+        <button id="btnVolver" class="btn-volver">Volver</button>
+        <h1>Sala</h1>
+    </header>
+    <main class="contenedor-sala">
+        <div class="pantalla">PANTALLA</div>
+        <div id="cajaAsientos" class="grilla-asientos"></div>
+        <div class="resumen">
+            <p id="textoAsientos">Ninguno</p>
+            <p id="textoTotal">Total: 0 Bs</p>
+        </div>
+        <button id="btnSiguiente" class="btn-accion" style="display:none;">Continuar</button>
+    </main>
 
-var seleccionados = [];
-var precio = 40;
+    <script>
+        var params = new URLSearchParams(window.location.search);
+        var idStr = params.get('id');
+        var hora = params.get('hora') || '19:00';
 
-fetch('/api/asientos?idPeli=' + id + '&hora=' + hora)
-.then(function(res) { return res.json(); })
-.then(function(data) {
-    var matriz = data.matriz;
-    var caja = document.getElementById('cajaAsientos');
-    for (var f = 0; f < 8; f++) {
-        for (var c = 0; c < 8; c++) {
-            var div = document.createElement('div');
-            div.className = 'asiento';
-            if (matriz[f][c] === 1) {
-                div.classList.add('ocupado');
-            } else {
-                div.classList.add('libre');
-                div.dataset.fila = f;
-                div.dataset.col = c;
-                div.onclick = function(e) {
-                    var elem = e.target;
-                    var fila = parseInt(elem.dataset.fila);
-                    var col = parseInt(elem.dataset.col);
-                    var nombre = 'F' + fila + 'C' + col;
-
-                    if (elem.classList.contains('seleccionado')) {
-                        elem.classList.remove('seleccionado');
-                        seleccionados = seleccionados.filter(function(x) { return x.n !== nombre; });
-                    } else {
-                        elem.classList.add('seleccionado');
-                        seleccionados.push({f: fila, c: col, n: nombre});
-                    }
-                    actualizar();
-                };
-            }
-            caja.appendChild(div);
+        if (idStr === null || idStr === "") {
+            window.location.href = 'Proyect.html';
         }
-    }
-});
 
-function actualizar() {
-    var btn = document.getElementById('btnSiguiente');
-    if (seleccionados.length > 0) {
-        var nombres = seleccionados.map(function(x) { return x.n; }).join(', ');
-        document.getElementById('textoAsientos').textContent = 'Asientos: ' + nombres;
-        document.getElementById('textoTotal').textContent = 'Total: ' + (seleccionados.length * precio) + ' Bs';
-        btn.style.display = 'block';
-    } else {
-        document.getElementById('textoAsientos').textContent = 'Ninguno';
-        document.getElementById('textoTotal').textContent = 'Total: 0 Bs';
-        btn.style.display = 'none';
-    }
-}
+        var id = parseInt(idStr);
+        if (isNaN(id)) {
+            window.location.href = 'Proyect.html';
+        }
 
-document.getElementById('btnSiguiente').onclick = function() {
-    localStorage.setItem('reserva', JSON.stringify({
-        id: id,
-        hora: hora,
-        asientos: seleccionados,
-        total: seleccionados.length * precio
-    }));
-    window.location.href = 'Compra.html';
-};
-</script>
+        document.getElementById('btnVolver').onclick = function() {
+            window.location.href = 'Funciones.html?id=' + id;
+        };
+
+        var seleccionados = [];
+        var precio = 40;
+
+        // URL corregida para que coincida con la ruta de tu servidor Node
+        fetch('/api/asientos/' + id + '?horario=' + hora)
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                var matriz = data.matriz;
+                var caja = document.getElementById('cajaAsientos');
+                for (var f = 0; f < 8; f++) {
+                    for (var c = 0; c < 8; c++) {
+                        var div = document.createElement('div');
+                        div.className = 'asiento';
+                        if (matriz[f][c] === 1) {
+                            div.classList.add('ocupado');
+                        } else {
+                            div.classList.add('libre');
+                            div.dataset.fila = f;
+                            div.dataset.col = c;
+                            div.onclick = function(e) {
+                                var elem = e.target;
+                                var fila = parseInt(elem.dataset.fila);
+                                var col = parseInt(elem.dataset.col);
+                                var nombre = 'F' + fila + 'C' + col;
+
+                                if (elem.classList.contains('seleccionado')) {
+                                    elem.classList.remove('seleccionado');
+                                    seleccionados = seleccionados.filter(function(x) { return x.n !== nombre; });
+                                } else {
+                                    elem.classList.add('seleccionado');
+                                    seleccionados.push({f: fila, c: col, n: nombre});
+                                }
+                                actualizar();
+                            };
+                        }
+                        caja.appendChild(div);
+                    }
+                }
+            })
+            .catch(function(error) {
+                console.error("Error al cargar asientos:", error);
+            });
+
+        function actualizar() {
+            var btn = document.getElementById('btnSiguiente');
+            if (seleccionados.length > 0) {
+                var nombres = seleccionados.map(function(x) { return x.n; }).join(', ');
+                document.getElementById('textoAsientos').textContent = 'Asientos: ' + nombres;
+                document.getElementById('textoTotal').textContent = 'Total: ' + (seleccionados.length * precio) + ' Bs';
+                btn.style.display = 'block';
+            } else {
+                document.getElementById('textoAsientos').textContent = 'Ninguno';
+                document.getElementById('textoTotal').textContent = 'Total: 0 Bs';
+                btn.style.display = 'none';
+            }
+        }
+
+        document.getElementById('btnSiguiente').onclick = function() {
+            localStorage.setItem('reserva', JSON.stringify({
+                id: id,
+                hora: hora,
+                asientos: seleccionados,
+                total: seleccionados.length * precio
+            }));
+            window.location.href = 'Compra.html';
+        };
+    </script>
 </body>
 </html>
