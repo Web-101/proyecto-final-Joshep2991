@@ -1,61 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Cartelera</title>
-    <link rel="stylesheet" href="Proyect.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartelera</title>
+<link rel="stylesheet" href="Proyect.css">
 </head>
 <body>
-    <header class="cabecera">
-        <h1>Cartelera</h1>
-        <p class="subtitulo">Selecciona un formato:</p>
-        <div class="caja-filtro">
-            <span>Todos los formatos</span>
-        </div>
-    </header>
-
-    <main class="grid-peliculas" id="gridPeliculas"></main>
-
-    <nav class="nav-inferior">
-        <a href="#">Menu</a>
-        <a href="#" class="activo">Ticket</a>
-        <a href="#">Perfil</a>
-        <a href="#">Mensaje</a>
-    </nav>
-
-    <script>
-        fetch('/api/peliculas')
-            .then(function(res) { return res.json(); })
-            .then(function(pelis) {
-                var grid = document.getElementById('gridPeliculas');
-                grid.innerHTML = '';
-                pelis.forEach(function(p) {
-                    var a = document.createElement('a');
-                    a.href = 'Detalle.html?id=' + p.id;
-                    a.className = 'card';
-                    a.style.textDecoration = 'none';
-                    a.style.color = 'inherit';
-
-                    if (p.estreno) {
-                        var span = document.createElement('span');
-                        span.className = 'etiqueta';
-                        span.textContent = 'ESTRENO';
-                        a.appendChild(span);
-                    }
-
-                    var img = document.createElement('img');
-                    img.src = p.imagen;
-                    img.alt = p.titulo;
-                    a.appendChild(img);
-
-                    var h3 = document.createElement('h3');
-                    h3.textContent = p.titulo;
-                    a.appendChild(h3);
-
-                    grid.appendChild(a);
-                });
-            })
-            .catch(function(e) { console.error('Error:', e); });
-    </script>
+<header class="cabecera">
+<h1>Cartelera</h1>
+</header>
+<main>
+<div id="contenedorPeliculas" class="grid-peliculas"></div>
+</main>
+<script>
+fetch('/api/peliculas')
+.then(function(res) { return res.json(); })
+.then(function(datos) {
+    var caja = document.getElementById('contenedorPeliculas');
+    datos.forEach(function(peli) {
+        var div = document.createElement('div');
+        div.className = 'tarjeta';
+        div.onclick = function() {
+            window.location.href = 'Funciones.html?id=' + peli.id;
+        };
+        var img = document.createElement('img');
+        img.src = peli.imagen;
+        var tit = document.createElement('h3');
+        tit.textContent = peli.titulo;
+        div.appendChild(img);
+        div.appendChild(tit);
+        caja.appendChild(div);
+    });
+});
+</script>
 </body>
 </html>

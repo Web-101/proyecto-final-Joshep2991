@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Funciones</title>
+<link rel="stylesheet" href="Proyect.css">
+</head>
+<body>
+<header class="cabecera">
+<button onclick="window.location.href='Proyect.html'" class="btn-volver">Volver</button>
+<h1>Funciones</h1>
+</header>
+<main class="contenedor-centro">
+<img id="imgPeli" class="img-detalle">
+<h2 id="titPeli"></h2>
+<p id="sinPeli"></p>
+<div id="cajaHorarios" class="horarios"></div>
+</main>
+<script>
+var params = new URLSearchParams(window.location.search);
+var id = parseInt(params.get('id'));
+if(!id) window.location.href = 'Proyect.html';
+
+fetch('/api/peliculas/' + id)
+.then(function(res) { return res.json(); })
+.then(function(peli) {
+    document.getElementById('imgPeli').src = peli.imagen;
+    document.getElementById('titPeli').textContent = peli.titulo;
+    document.getElementById('sinPeli').textContent = peli.sinopsis;
+
+    var horas = ["14:00", "16:30", "19:00", "21:30"];
+    var caja = document.getElementById('cajaHorarios');
+    horas.forEach(function(h) {
+        var btn = document.createElement('button');
+        btn.className = 'btn-hora';
+        btn.textContent = h;
+        btn.onclick = function() {
+            window.location.href = 'Asientos.html?id=' + id + '&hora=' + h;
+        };
+        caja.appendChild(btn);
+    });
+});
+</script>
+</body>
+</html>

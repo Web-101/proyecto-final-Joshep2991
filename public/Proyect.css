@@ -1,93 +1,200 @@
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
-
 body {
     background-color: #0f1115;
-    color: #ffffff;
-    font-family: Arial, Helvetica, sans-serif;
-    padding-bottom: 70px;
+    color: #fff;
+    font-family: Arial, sans-serif;
 }
-
 .cabecera {
-    padding: 20px;
-}
-
-.cabecera h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-.subtitulo {
-    font-size: 14px;
-    color: #cccccc;
-    margin-bottom: 10px;
-}
-
-.caja-filtro {
-    background-color: #2a2a2a;
+    background-color: #1a1a1a;
     padding: 15px;
-    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #333;
 }
-
+.cabecera h1 {
+    font-size: 18px;
+    margin-left: 10px;
+}
+.btn-volver {
+    background: none;
+    border: none;
+    color: #0ea5e9;
+    font-size: 14px;
+}
 .grid-peliculas {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
-    padding: 20px;
+    padding: 15px;
 }
-
-.card {
-    position: relative;
+@media (min-width: 600px) {
+    .grid-peliculas {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+.tarjeta {
+    background-color: #1a1a1a;
+    border-radius: 8px;
+    padding: 10px;
     text-align: center;
 }
-
-.card img {
+.tarjeta img {
     width: 100%;
-    max-width: 140px;
+    border-radius: 6px;
     aspect-ratio: 2/3;
     object-fit: cover;
-    border-radius: 5px;
-    display: block;
-    margin: 0 auto;
 }
-
-.card h3 {
-    font-size: 12px;
-    margin-top: 5px;
+.tarjeta h3 {
+    font-size: 14px;
+    margin-top: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-
-.etiqueta {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    background-color: orange;
-    color: black;
-    font-size: 10px;
-    padding: 2px 5px;
-    font-weight: bold;
+.contenedor-centro {
+    padding: 20px;
+    text-align: center;
 }
-
-.nav-inferior {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: #1a1a1a;
+.img-detalle {
+    width: 150px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+.horarios {
     display: flex;
-    justify-content: space-around;
-    padding: 15px 0;
-    border-top: 1px solid #333;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
 }
-
-.nav-inferior a {
-    color: #888;
-    text-decoration: none;
+.btn-hora {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.contenedor-sala {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.pantalla {
+    width: 100%;
+    max-width: 300px;
+    background-color: #555;
+    text-align: center;
+    padding: 5px;
+    margin-bottom: 20px;
+    border-radius: 4px;
     font-size: 12px;
+    letter-spacing: 2px;
 }
-
-.nav-inferior .activo {
-    color: #ffffff;
+.grilla-asientos {
+    display: grid;
+    grid-template-columns: repeat(8, 30px);
+    gap: 8px;
+    margin-bottom: 20px;
+}
+.asiento {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+}
+.libre {
+    background-color: #444;
+}
+.ocupado {
+    background-color: #e11d48;
+}
+.seleccionado {
+    background-color: #10b981;
+}
+.resumen {
+    width: 100%;
+    max-width: 300px;
+    background-color: #1a1a1a;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.resumen p {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+.btn-accion {
+    background-color: #7c3aed;
+    color: #fff;
+    border: none;
+    padding: 15px;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 8px;
+    font-size: 16px;
     font-weight: bold;
+}
+.contenedor-formulario {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.tarjeta-resumen {
+    background-color: #1a1a1a;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    width: 100%;
+    max-width: 300px;
+}
+form {
+    width: 100%;
+    max-width: 300px;
+}
+form input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #333;
+    background-color: #222;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 14px;
+}
+.modal-oculto {
+    display: none;
+}
+.modal-visible {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.modal-cuerpo {
+    background-color: #1a1a1a;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+}
+.modal-cuerpo h2 {
+    margin-bottom: 10px;
+    color: #10b981;
+}
+.modal-cuerpo p {
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.5;
 }

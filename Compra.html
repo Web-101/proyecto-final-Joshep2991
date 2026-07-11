@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compra</title>
+<link rel="stylesheet" href="Proyect.css">
+</head>
+<body>
+<header class="cabecera">
+<button onclick="window.history.back()" class="btn-volver">Volver</button>
+<h1>Confirmar</h1>
+</header>
+<main class="contenedor-formulario">
+<div class="tarjeta-resumen" id="resumenCompra"></div>
+<form id="formCompra">
+<input type="text" id="nom" placeholder="Nombre Completo" required>
+<input type="email" id="cor" placeholder="Correo" required>
+<input type="tel" id="tel" placeholder="Telefono">
+<button type="submit" class="btn-accion">Comprar</button>
+</form>
+</main>
+
+<div id="modal" class="modal-oculto">
+<div class="modal-cuerpo">
+<h2 id="modalTit"></h2>
+<p id="modalDet"></p>
+<button onclick="window.location.href='Proyect.html'" class="btn-accion">Cerrar</button>
+</div>
+</div>
+
+<script>
+var datos = JSON.parse(localStorage.getItem('reserva'));
+if(!datos) window.location.href = 'Proyect.html';
+
+var resDiv = document.getElementById('resumenCompra');
+var nombres = datos.asientos.map(function(x) { return x.n; }).join(', ');
+resDiv.innerHTML = '<p>Horario: ' + datos.hora + '</p>' +
+                   '<p>Asientos: ' + nombres + '</p>' +
+                   '<p>Total a pagar: ' + datos.total + ' Bs</p>';
+
+document.getElementById('formCompra').onsubmit = function(e) {
+    e.preventDefault();
+    var nom = document.getElementById('nom').value;
+
+    fetch('/api/reservar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            idPelicula: datos.id,
+            horario: datos.hora,
+            asientos: datos.asientos.map(function(x) { return {fila: x.f, columna: x.c}; })
+        })
+    }).then(function(res) {
+        return res.json();
+    }).then(function(respuesta) {
+        var mod = document.getElementById('modal');
+        mod.className = 'modal-visible';
+        document.getElementById('modalTit').textContent = 'Gracias ' + nom;
+        document.getElementById('modalDet').textContent = 'Tus asientos ' + nombres + ' estan confirmados.';
+        localStorage.removeItem('reserva');
+    });
+};
+</script>
+</body>
+</html>
