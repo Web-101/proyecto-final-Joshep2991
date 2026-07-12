@@ -8,10 +8,41 @@
     <style>
         body{ background:#111; color:white; font-family:Arial; margin:0; padding:20px; }
         .contenedor{ max-width:400px; margin:auto; }
-        input{ width:100%; padding:10px; margin-bottom:12px; box-sizing:border-box; background:#222; color:white; border:1px solid #444; border-radius:4px; }
-        button{ width:100%; padding:12px; background:#d91c1c; color:white; border:none; cursor:pointer; border-radius:4px; font-size:16px; }
-        button:hover{ background:#b51414; }
-        .resumen-item{ padding:8px 0; border-bottom:1px solid #333; }
+        
+        h2 { 
+            color: #00ffff; 
+        }
+        
+        .resumen-item{ 
+            padding:8px 0; 
+            border-bottom:1px solid #333; 
+            color: #00ffff;
+        }
+        
+        hr { 
+            border: none; 
+            border-top: 1px solid #00ffff; 
+            margin: 15px 0; 
+        }
+
+        input{ width:100%; padding:10px; margin-bottom:12px; box-sizing:border-box; 
+            background:#222; color:white; border:1px solid #444; border-radius:4px; }
+        
+        button{ 
+            width:100%; 
+            padding:12px; 
+            background:#8b0000; 
+            color:white; 
+            border:none; 
+            cursor:pointer; 
+            border-radius:4px; 
+            font-size:16px; 
+            font-weight: bold;
+        }
+        
+        button:hover{ 
+            background:#660000; 
+        }
     </style>
 </head>
 <body>
@@ -37,7 +68,7 @@
         window.location.href = "Index.html";
     }
 
-    // Cargar película
+    // Cargar peli
     fetch("/api/peliculas/" + reserva.idPelicula)
         .then(r => r.json())
         .then(p => {

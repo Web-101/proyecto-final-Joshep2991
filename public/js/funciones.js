@@ -1,49 +1,86 @@
-// funciones.js
-console.log("✅ funciones.js cargado correctamente");
-
 let parametros = new URLSearchParams(window.location.search);
+
 let idPelicula = parametros.get("id");
-console.log("ID Película:", idPelicula);
 
-// Cargar película
 fetch("/api/peliculas/" + idPelicula)
-    .then(res => res.json())
-    .then(pelicula => {
-        document.getElementById("txtTitulo").textContent = pelicula.titulo;
-        document.getElementById("txtGenero").textContent = pelicula.genero || "Género no disponible";
-        document.getElementById("txtSinopsis").textContent = pelicula.sinopsis || "Sin sinopsis disponible";
-        document.getElementById("imgPoster").src = pelicula.imagen || "https://via.placeholder.com/170x250";
-        document.getElementById("imgPoster").alt = pelicula.titulo;
-    })
-    .catch(error => console.error("Error al cargar película:", error));
 
-// Cargar funciones
+.then(function(respuesta){
+
+return respuesta.json();
+
+})
+
+.then(function(pelicula){
+
+document.getElementById("txtTitulo").textContent =
+pelicula.titulo;
+
+document.getElementById("txtGenero").textContent =
+pelicula.genero;
+
+document.getElementById("txtDuracion").textContent =
+pelicula.duracion;
+
+document.getElementById("txtSinopsis").textContent =
+pelicula.sinopsis;
+
+document.getElementById("imgPoster").src =
+pelicula.imagen;
+
+if(pelicula.estreno){
+
+document.getElementById("txtEstreno").textContent =
+"ESTRENO";
+
+}else{
+
+document.getElementById("txtEstreno").style.display =
+"none";
+
+}
+
+});
+
 fetch("/api/funciones/" + idPelicula)
-    .then(res => res.json())
-    .then(funciones => {
-        let contenedor = document.getElementById("listaHorarios");
-        contenedor.innerHTML = "";
-        if (funciones.length === 0) {
-            contenedor.innerHTML = "<p>No hay funciones disponibles para hoy.</p>";
-            return;
-        }
-        funciones.forEach(f => {
-            console.log("Función:", f);
-            let div = document.createElement("div");
-            div.className = "btn-horario";
-            div.textContent = f.horario;
-            // ✅ AQUÍ ESTÁ LA CLAVE: PASAMOS LA HORA
-            div.onclick = function() {
-                let url = "Asientos.html?id=" + idPelicula +
-                          "&funcion=" + f.id +
-                          "&hora=" + encodeURIComponent(f.horario);
-                console.log("Redirigiendo a:", url);
-                window.location.href = url;
-            };
-            contenedor.appendChild(div);
-        });
-    })
-    .catch(error => {
-        console.error("Error al cargar funciones:", error);
-        document.getElementById("listaHorarios").innerHTML = "<p style='color:red;'>Error al cargar los horarios.</p>";
-    });
+
+.then(function(respuesta){
+
+return respuesta.json();
+
+})
+
+.then(function(funciones){
+
+let lista =
+document.getElementById("listaHorarios");
+
+lista.innerHTML = "";
+
+funciones.forEach(function(funcion){
+
+let boton =
+document.createElement("div");
+
+boton.className =
+"btn-horario";
+
+boton.textContent =
+funcion.horario;
+
+boton.onclick = function(){
+
+window.location.href =
+"Asientos.html?id=" +
+idPelicula +
+"&funcion=" +
+funcion.id +
+"&hora=" +
+encodeURIComponent(funcion.horario);
+
+};
+
+lista.appendChild(boton);
+
+});
+
+});
