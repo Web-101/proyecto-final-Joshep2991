@@ -1,59 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Funciones / Horarios</title>
-    <link rel="stylesheet" href="Proyect.css">
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Funciones</title>
+
+<link rel="stylesheet"
+href="Proyect.css">
+
 </head>
-<body>
-    <header class="cabecera">
-        <a href="Proyect.html" class="btn-volver">Volver</a>
-        <h1>Selecciona un horario</h1>
-    </header>
-    <main class="contenedor-info" style="padding: 20px; text-align: center;">
-        <h2 id="tituloPeliFunciones" style="color: white; margin-bottom: 20px;">Cargando película...</h2>
-        <div id="listaHorarios" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-            </div>
-    </main>
-    <script>
-        var params = new URLSearchParams(window.location.search);
-        var idStr = params.get('id');
 
-        if (idStr === null || idStr === "") {
-            window.location.href = 'Proyect.html';
-        }
+<body><header 
+    class="cabecera">
 
-        var id = parseInt(idStr);
-        if (isNaN(id)) {
-            window.location.href = 'Proyect.html';
-        }
+<h1>Funciones</h1>
 
-        // Cargar datos de la película y sus horarios específicos
-        fetch('/api/peliculas/' + id)
-            .then(function(res) { return res.json(); })
-            .then(function(peli) {
-                if (peli.error) throw new Error(peli.error);
-                document.getElementById('tituloPeliFunciones').textContent = peli.titulo;
+</header><main>
+    <div class="detalle-pelicula">
 
-                var contenedor = document.getElementById('listaHorarios');
-                contenedor.innerHTML = ''; // Limpiar
+<div class="poster">
 
-                // Usar los horarios de la película o un respaldo si no tiene
-                var horarios = peli.horarios || ["19:00"];
+<img
+id="imgPoster"
+src=""
+alt="Poster">
 
-                horarios.forEach(function(hora) {
-                    var btn = document.createElement('a');
-                    btn.className = 'btn-accion';
-                    btn.style.cssText = 'padding: 12px 25px; background: #e50914; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;';
-                    btn.textContent = hora;
-                    btn.href = 'Asientos.html?id=' + id + '&hora=' + hora;
-                    contenedor.appendChild(btn);
-                });
-            })
-            .catch(function() {
-                console.error("Error al cargar la película");
-                window.location.href = 'Proyect.html';
-            });
-    </script>
+</div><div class="informacion">
+
+<h2
+id="txtTitulo">
+</h2>
+
+<p>
+
+<b>Genero:</b>
+
+<span
+id="txtGenero">
+</span>
+
+</p>
+
+<p
+id="txtSinopsis">
+</p></div>
+</div>
+<h2>
+
+Horarios disponibles
+
+</h2>
+
+<div
+id="listaHorarios"
+class="lista-horarios">
+
+</div>
+
+</main>
+
+<script
+src="js/funciones.js">
+
+</script>
+
 </body>
+
 </html>

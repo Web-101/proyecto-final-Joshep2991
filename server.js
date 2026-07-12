@@ -1,222 +1,207 @@
-var http = require('http');
-var fs = require('fs');
-var path = require('path');
-var url = require('url');
+const http = require("http");
+const fs = require("fs");
+const path = require("path");
+const url = require("url");
+const { StringDecoder } = require("string_decoder");
+const pool = require("./db/conexion");
 
-var PUERTO = 3000;
-var BASE = __dirname;
-var PUBLIC = path.join(BASE, 'public');
-var DATA_DIR = path.join(PUBLIC, 'data');
+const puerto = 3000;
 
-var mimes = {
-    '.html': 'text/html',
-    '.css': 'text/css',
-    '.js': 'application/javascript',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.jpeg': 'image/jpeg',
-    '.json': 'application/json'
+const tipos = {
+    ".html":"text/html",
+    ".css":"text/css",
+    ".js":"application/javascript",
+    ".png":"image/png",
+    ".jpg":"image/jpeg",
+    ".jpeg":"image/jpeg",
+    ".gif":"image/gif",
+    ".json":"application/json"
 };
 
-function leerJSON(nombre) {
-    var ruta = path.join(DATA_DIR, nombre);
-    try {
-        var contenido = fs.readFileSync(ruta, 'utf8');
-        return JSON.parse(contenido);
-    } catch (e) {
-        return null;
-    }
-}
+const servidor = http.createServer(async function(req,res){
+    let ruta = url.parse(req.url,true);
+    console.log(`[${req.method}] ${ruta.pathname}`); // Log de todas las peticiones
 
-function guardarJSON(nombre, obj) {
-    var ruta = path.join(DATA_DIR, nombre);
-    fs.writeFileSync(ruta, JSON.stringify(obj, null, 4), 'utf8');
-}
-
-function obtenerAsientos(clave) {
-    var todos = leerJSON('asientos.json') || {};
-    var m = todos[clave];
-    if (!m) {
-        var filas = 8;
-        var cols = 8;
-        m = [];
-        for (var f = 0; f < filas; f++) {
-            m[f] = [];
-            for (var c = 0; c < cols; c++) {
-                m[f][c] = Math.random() < 0.3 ? 1 : 0;
-            }
+    // GET /api/peliculas
+    if(ruta.pathname==="/api/peliculas" && req.method==="GET"){
+        try{
+            let peliculas = await pool.query("SELECT * FROM peliculas ORDER BY id");
+            res.writeHead(200,{"Content-Type":"application/json"});
+            res.end(JSON.stringify(peliculas.rows));
+        } catch(error){
+            console.error(error);
+            res.writeHead(500);
+            res.end(JSON.stringify({error:"Error"}));
         }
-        todos[clave] = m;
-        guardarJSON('asientos.json', todos);
-    }
-    return m;
-}
-
-function actualizarAsientos(clave, lista) {
-    var todos = leerJSON('asientos.json') || {};
-    var m = todos[clave];
-    if (!m) {
-        m = obtenerAsientos(clave);
-    }
-    lista.forEach(function(item) {
-        var f = item.fila;
-        var c = item.columna;
-        if (f >= 0 && f < m.length && c >= 0 && c < m[0].length) {
-            m[f][c] = 1;
-        }
-    });
-    todos[clave] = m;
-    guardarJSON('asientos.json', todos);
-    return m;
-}
-
-var servidor = http.createServer(function(req, res) {
-    var parsed = url.parse(req.url, true);
-    var ruta = decodeURIComponent(parsed.pathname);
-
-    if (ruta.startsWith('/api/')) {
-        res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-        if (req.method === 'OPTIONS') {
-            res.writeHead(200);
-            res.end();
-            return;
-        }
-
-        if (ruta === '/api/peliculas' && req.method === 'GET') {
-            var lista = leerJSON('peliculas.json');
-            if (lista) {
-                res.writeHead(200);
-                res.end(JSON.stringify(lista));
-            } else {
-                res.writeHead(500);
-                res.end(JSON.stringify({ error: 'no se pudieron cargar' }));
-            }
-            return;
-        }
-
-        if (ruta.startsWith('/api/peliculas/') && req.method === 'GET') {
-            var id = parseInt(ruta.split('/').pop());
-            var todas = leerJSON('peliculas.json');
-            if (todas) {
-                var peli = todas.find(function(p) { return p.id == id; });
-                if (peli) {
-                    res.writeHead(200);
-                    res.end(JSON.stringify(peli));
-                } else {
-                    res.writeHead(404);
-                    res.end(JSON.stringify({ error: 'no existe' }));
-                }
-            } else {
-                res.writeHead(500);
-                res.end(JSON.stringify({ error: 'error al leer' }));
-            }
-            return;
-        }
-
-        if (ruta.startsWith('/api/asientos/') && req.method === 'GET') {
-            var idPeli = parseInt(ruta.split('/').pop());
-            var horario = parsed.query.horario || '19:00';
-            var clave = idPeli + '-' + horario;
-            var m = obtenerAsientos(clave);
-            res.writeHead(200);
-            res.end(JSON.stringify({ matriz: m }));
-            return;
-        }
-
-        if (ruta.startsWith('/api/horarios/') && req.method === 'GET') {
-            var horarios = ["14:00", "16:30", "19:00", "21:30"];
-            res.writeHead(200);
-            res.end(JSON.stringify({ horarios: horarios }));
-            return;
-        }
-
-        if (ruta === '/api/tickets' && req.method === 'POST') {
-            var cuerpoT = '';
-            req.on('data', function(chunk) { cuerpoT += chunk; });
-            req.on('end', function() {
-                try {
-                    var data = JSON.parse(cuerpoT);
-                    var tickets = leerJSON('tickets.json') || [];
-                    var nuevoTicket = {
-                        id: Date.now(),
-                        idPelicula: data.idPelicula,
-                        horario: data.horario || "19:00",
-                        asientos: data.asientos,
-                        fecha: new Date().toISOString()
-                    };
-                    tickets.push(nuevoTicket);
-                    guardarJSON('tickets.json', tickets);
-                    res.writeHead(200);
-                    res.end(JSON.stringify({ mensaje: 'ticket guardado', ticket: nuevoTicket }));
-                } catch (e) {
-                    res.writeHead(400);
-                    res.end(JSON.stringify({ error: 'error al guardar ticket' }));
-                }
-            });
-            return;
-        }
-
-        if (ruta === '/api/usuario/historial' && req.method === 'GET') {
-            var historial = leerJSON('tickets.json') || [];
-            res.writeHead(200);
-            res.end(JSON.stringify(historial));
-            return;
-        }
-
-        if (ruta === '/api/reservar' && req.method === 'POST') {
-            var cuerpo = '';
-            req.on('data', function(chunk) { cuerpo += chunk; });
-            req.on('end', function() {
-                try {
-                    var data = JSON.parse(cuerpo);
-                    var idPeli = data.idPelicula;
-                    var horario = data.horario || '19:00';
-                    var clave = idPeli + '-' + horario;
-                    var asientos = data.asientos;
-                    
-                    if (idPeli === undefined || !Array.isArray(asientos)) {
-                        res.writeHead(400);
-                        res.end(JSON.stringify({ error: 'datos invalidos' }));
-                        return;
-                    }
-                    var nueva = actualizarAsientos(clave, asientos);
-                    res.writeHead(200);
-                    res.end(JSON.stringify({ mensaje: 'ok', matriz: nueva }));
-                } catch (e) {
-                    res.writeHead(400);
-                    res.end(JSON.stringify({ error: 'json malo' }));
-                }
-            });
-            return;
-        }
-
-        res.writeHead(404);
-        res.end(JSON.stringify({ error: 'api no encontrada' }));
         return;
     }
 
-    var archivo = path.join(PUBLIC, ruta === '/' ? 'Proyect.html' : ruta);
-    if (!path.extname(archivo)) {
-        archivo += '.html';
+    // GET /api/peliculas/:id
+    if(ruta.pathname.startsWith("/api/peliculas/") && req.method==="GET"){
+        try{
+            let id = ruta.pathname.split("/")[3];
+            let pelicula = await pool.query("SELECT * FROM peliculas WHERE id=$1", [id]);
+            if(pelicula.rows.length===0){
+                res.writeHead(404);
+                res.end();
+                return;
+            }
+            res.writeHead(200,{"Content-Type":"application/json"});
+            res.end(JSON.stringify(pelicula.rows[0]));
+        } catch(error){
+            console.error(error);
+            res.writeHead(500);
+            res.end();
+        }
+        return;
     }
-    var ext = path.extname(archivo);
-    var tipo = mimes[ext] || 'application/octet-stream';
 
-    fs.readFile(archivo, function(err, data) {
-        if (err) {
+    // GET /api/funciones/:id
+    if(ruta.pathname.startsWith("/api/funciones/") && req.method==="GET"){
+        try{
+            let id = ruta.pathname.split("/")[3];
+            let funciones = await pool.query("SELECT * FROM funciones WHERE id_pelicula=$1 ORDER BY horario", [id]);
+            res.writeHead(200,{"Content-Type":"application/json"});
+            res.end(JSON.stringify(funciones.rows));
+        } catch(error){
+            console.error(error);
+            res.writeHead(500);
+            res.end();
+        }
+        return;
+    }
+
+    // GET /api/asientos/:idFuncion
+    if(ruta.pathname.startsWith("/api/asientos/") && req.method==="GET"){
+        try{
+            let idFuncion = ruta.pathname.split("/")[3];
+            let consulta = await pool.query(
+                "SELECT fila,columna,ocupado FROM asientos WHERE id_funcion=$1 ORDER BY fila,columna",
+                [idFuncion]
+            );
+            let matriz=[];
+            for(let i=0;i<8;i++){
+                matriz[i]=[];
+                for(let j=0;j<8;j++){
+                    matriz[i][j]=0;
+                }
+            }
+            consulta.rows.forEach(function(a){
+                if(a.ocupado){
+                    matriz[a.fila-1][a.columna-1]=1;
+                }
+            });
+            res.writeHead(200,{"Content-Type":"application/json"});
+            res.end(JSON.stringify({matriz:matriz}));
+        } catch(error){
+            console.error(error);
+            res.writeHead(500);
+            res.end();
+        }
+        return;
+    }
+
+    // POST /api/reservar (CORREGIDO)
+    if(ruta.pathname === "/api/reservar" && req.method === "POST") {
+        let decoder = new StringDecoder("utf8");
+        let datos = "";
+
+        req.on("data", function (parte) {
+            datos += decoder.write(parte);
+        });
+
+        req.on("end", async function () {
+            datos += decoder.end();
+            console.log("Datos recibidos en /api/reservar:", datos); // Log
+
+            try {
+                let reserva = JSON.parse(datos);
+                console.log("Reserva parseada:", reserva);
+
+                // Verificar que la función existe
+                let funcion = await pool.query(
+                    "SELECT id FROM funciones WHERE id = $1",
+                    [reserva.idFuncion]
+                );
+
+                if(funcion.rows.length === 0){
+                    console.log("Función no encontrada");
+                    res.writeHead(404);
+                    res.end(JSON.stringify({ correcto: false, mensaje: "Función no encontrada" }));
+                    return;
+                }
+
+                let idFuncion = funcion.rows[0].id;
+
+                // Insertar la reserva
+                let resultado = await pool.query(
+                    `INSERT INTO reservas (id_funcion, nombre, correo, telefono)
+                     VALUES ($1, $2, $3, $4) RETURNING id`,
+                    [
+                        idFuncion,
+                        reserva.nombre,
+                        reserva.correo,
+                        reserva.telefono || ''
+                    ]
+                );
+                console.log("Reserva insertada con ID:", resultado.rows[0].id);
+
+                // Actualizar asientos
+                for (let i = 0; i < reserva.asientos.length; i++) {
+                    await pool.query(
+                        `UPDATE asientos
+                         SET ocupado = true
+                         WHERE id_funcion = $1
+                         AND fila = $2
+                         AND columna = $3`,
+                        [
+                            idFuncion,
+                            reserva.asientos[i].fila + 1,
+                            reserva.asientos[i].columna + 1
+                        ]
+                    );
+                }
+                console.log("Asientos actualizados");
+
+                res.writeHead(200, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ correcto: true }));
+
+            } catch (error) {
+                console.error("Error en /api/reservar:", error);
+                res.writeHead(500);
+                res.end(JSON.stringify({ correcto: false, mensaje: error.message }));
+            }
+        });
+        return;
+    }
+
+    // Servir archivos estáticos
+    let archivo;
+    if (ruta.pathname === "/") {
+        archivo = path.join(__dirname, "public", "Index.html");
+    } else {
+        let rutaArchivo = decodeURIComponent(ruta.pathname);
+        if (rutaArchivo.startsWith("/")) {
+            rutaArchivo = rutaArchivo.substring(1);
+        }
+        archivo = path.join(__dirname, "public", rutaArchivo);
+    }
+
+    fs.readFile(archivo, function(error, contenido){
+        if (error) {
+            console.log("Archivo no encontrado:", archivo);
             res.writeHead(404);
-            res.end('404 - no encontrado');
+            res.end("Archivo no encontrado");
             return;
         }
-        res.writeHead(200, { 'Content-Type': tipo });
-        res.end(data);
+        let extension = path.extname(archivo);
+        res.writeHead(200, {
+            "Content-Type": tipos[extension] || "text/plain"
+        });
+        res.end(contenido);
     });
 });
 
-servidor.listen(PUERTO, function() {
-    console.log('Servidor en http://localhost:' + PUERTO);
+servidor.listen(puerto, function(){
+    console.log(`Servidor corriendo en http://localhost:${puerto}`);
 });

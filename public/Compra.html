@@ -2,67 +2,100 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Confirmar Compra</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compra</title>
     <link rel="stylesheet" href="Proyect.css">
+    <style>
+        body{ background:#111; color:white; font-family:Arial; margin:0; padding:20px; }
+        .contenedor{ max-width:400px; margin:auto; }
+        input{ width:100%; padding:10px; margin-bottom:12px; box-sizing:border-box; background:#222; color:white; border:1px solid #444; border-radius:4px; }
+        button{ width:100%; padding:12px; background:#d91c1c; color:white; border:none; cursor:pointer; border-radius:4px; font-size:16px; }
+        button:hover{ background:#b51414; }
+        .resumen-item{ padding:8px 0; border-bottom:1px solid #333; }
+    </style>
 </head>
 <body>
-    <header class="cabecera">
-        <a href="Proyect.html" class="btn-volver">Inicio</a>
-        <h1>Resumen de Compra</h1>
-    </header>
-    <main style="padding: 20px; color: white; text-align: center;">
-        <div id="detalleCompra" style="max-width: 450px; margin: 40px auto; background: #1a1a1a; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
-            <h2 id="infoPeli" style="margin-bottom: 15px; color: #e50914;">Cargando reserva...</h2>
-            <p id="infoHora" style="margin: 10px 0; font-size: 1.1em;"></p>
-            <p id="infoAsientos" style="margin: 10px 0; font-size: 1.1em;"></p>
-            <p id="infoTotal" style="margin: 20px 0; font-weight: bold; font-size: 1.3em; color: #46b450;"></p>
-            <button id="btnConfirmar" class="btn-accion" style="margin-top: 15px; padding: 12px 25px; background: #e50914; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1em; font-weight: bold; width: 100%;">Finalizar Compra</button>
-        </div>
-    </main>
-    <script>
-        var reservaStr = localStorage.getItem('reserva');
-        if (!reservaStr) {
-            window.location.href = 'Proyect.html';
+<div class="contenedor">
+    <h2>Resumen de Compra</h2>
+    <div class="resumen-item" id="pelicula"></div>
+    <div class="resumen-item" id="horario"></div>
+    <div class="resumen-item" id="asientos"></div>
+    <div class="resumen-item" id="total"></div>
+    <hr>
+    <input type="text" id="nombre" placeholder="Nombre completo" required>
+    <input type="email" id="correo" placeholder="Correo" required>
+    <input type="text" id="telefono" placeholder="Teléfono">
+    <button id="comprar">Confirmar Compra</button>
+</div>
+
+<script>
+    var reserva = JSON.parse(localStorage.getItem("reserva"));
+    console.log("Reserva en Compra.html:", reserva);
+
+    if (!reserva) {
+        alert("No hay reserva activa");
+        window.location.href = "Index.html";
+    }
+
+    // Cargar película
+    fetch("/api/peliculas/" + reserva.idPelicula)
+        .then(r => r.json())
+        .then(p => {
+            document.getElementById("pelicula").textContent = "Película: " + p.titulo;
+        })
+        .catch(e => console.error(e));
+
+    // Mostrar datos
+    document.getElementById("horario").textContent = "Horario: " + (reserva.hora || "No especificado");
+    var nombresAsientos = reserva.asientos.map(function(a) { return a.nombre; }).join(", ");
+    document.getElementById("asientos").textContent = "Asientos: " + nombresAsientos;
+    document.getElementById("total").textContent = "Total: " + reserva.total + " Bs";
+
+    // Comprar
+    document.getElementById("comprar").onclick = function() {
+        var nombre = document.getElementById("nombre").value.trim();
+        var correo = document.getElementById("correo").value.trim();
+        var telefono = document.getElementById("telefono").value.trim();
+
+        if (!nombre || !correo) {
+            alert("Complete todos los campos obligatorios");
+            return;
         }
-        var reserva = JSON.parse(reservaStr);
 
-        document.getElementById('infoHora').textContent = 'Horario seleccionado: ' + reserva.hora;
-        document.getElementById('infoAsientos').textContent = 'Asientos: ' + reserva.asientos.map(function(x) { return x.n; }).join(', ');
-        document.getElementById('infoTotal').textContent = 'Total a pagar: ' + reserva.total + ' Bs';
+        var asientosEnviar = reserva.asientos.map(function(a) {
+            return { fila: a.fila, columna: a.columna };
+        });
 
-        fetch('/api/peliculas/' + reserva.id)
-            .then(function(res) { return res.json(); })
-            .then(function(peli) {
-                document.getElementById('infoPeli').textContent = peli.titulo;
-            });
-
-        document.getElementById('btnConfirmar').onclick = function() {
-            fetch('/api/tickets', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    idPelicula: reserva.id,
-                    horario: reserva.hora,
-                    asientos: reserva.asientos
-                })
-            }).then(function() {
-                return fetch('/api/reservar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        idPelicula: reserva.id,
-                        horario: reserva.hora,
-                        asientos: reserva.asientos
-                    })
-                });
-            }).then(function() {
-                alert('¡Compra realizada con éxito!');
-                localStorage.removeItem('reserva');
-                window.location.href = 'Proyect.html';
-            }).catch(function() {
-                alert('Hubo un error al procesar tu compra.');
-            });
-        };
-    </script>
+        fetch("/api/reservar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                idFuncion: reserva.idFuncion,
+                nombre: nombre,
+                correo: correo,
+                telefono: telefono,
+                asientos: asientosEnviar
+            })
+        })
+        .then(function(r) {
+            console.log("Respuesta de /api/reservar:", r);
+            if (!r.ok) throw new Error("Error en la reserva");
+            return r.json();
+        })
+        .then(function(resultado) {
+            console.log("Resultado:", resultado);
+            if (resultado.correcto) {
+                localStorage.removeItem("reserva");
+                window.location.href = "Confirmacion.html";
+            } else {
+                alert("No se pudo completar la reserva: " + (resultado.mensaje || ""));
+            }
+        })
+        .catch(function(error) {
+            console.error("Error:", error);
+            alert("Error al procesar la compra. Revisa la consola.");
+        });
+    };
+</script>
 </body>
 </html>
