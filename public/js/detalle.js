@@ -31,8 +31,9 @@ async function cargarDetalle() {
 
         boton.onclick = function () {
 
+            // Ajustado con ../ para salir de la carpeta html y encontrar el archivo hermano
             location.href =
-            "asientos.html?id=" +
+            "../asientos.html?id=" +
             id +
             "&funcion=" +
             datos.funciones[i].id;

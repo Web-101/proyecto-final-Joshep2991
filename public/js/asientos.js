@@ -2,7 +2,8 @@ let parametros = new URLSearchParams(window.location.search);
 let idPelicula = parametros.get("id");
 let idFuncion = parametros.get("funcion");
 let hora = parametros.get("hora");
-console.log("Parámetros en Asientos:", { idPelicula, idFuncion, hora });
+console.log("Parametros en Asientos:", { idPelicula, idFuncion, hora });
+
 
 document.getElementById("volver").href = "Funciones.html?id=" + idPelicula;
 
@@ -92,6 +93,8 @@ document.getElementById("continuar").onclick = function() {
     };
     console.log("Guardando reserva en localStorage:", reserva);
     localStorage.setItem("reserva", JSON.stringify(reserva));
+    
+
     location.href = "Compra.html";
 };
 

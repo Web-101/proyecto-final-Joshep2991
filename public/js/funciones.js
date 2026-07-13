@@ -69,8 +69,9 @@ funcion.horario;
 
 boton.onclick = function(){
 
+// Ajustado con ../ para salir de la carpeta html y encontrar el archivo hermano
 window.location.href =
-"Asientos.html?id=" +
+"../Asientos.html?id=" +
 idPelicula +
 "&funcion=" +
 funcion.id +

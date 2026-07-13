@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumen de Compra</title>
+    <link rel="stylesheet" href="../css/compra.css">
+</head>
+<body>
+
+<div class="contenedor">
+    <a href="#" id="btnVolverCompra" class="btn-volver">Volver</a>
+    
+    <h2>Resumen de Compra</h2>
+    
+    <div class="resumen-item" id="txtPelicula">Película: </div>
+    <div class="resumen-item" id="txtHorario">Horario: </div>
+    <div class="resumen-item" id="txtAsientos">Asientos: </div>
+    <div class="resumen-item" id="txtTotal">Total: </div>
+    
+    <hr>
+    
+    <form id="formCompra">
+        <input type="text" id="inputNombre" placeholder="Nombre completo" required>
+        <input type="email" id="inputCorreo" placeholder="Correo" required>
+        <input type="tel" id="inputTelefono" placeholder="Teléfono">
+        
+        <button type="submit">Confirmar Compra</button>
+    </form>
+</div>
+
+<script>
+    
+    const paramsActuales = window.location.search;
+    const btnVolver = document.getElementById("btnVolverCompra");
+    
+    if (paramsActuales) {
+        btnVolver.href = "Asientos.html" + paramsActuales;
+    } else {
+        btnVolver.href = "Index.html";
+    }
+</script>
+<script src="../../js/compra.js"></script>
+
+</body>
+</html>|

@@ -1,0 +1,192 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #121212;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+    padding-bottom: 100px;
+}
+
+.cabecera {
+    background: #1b1b1b;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 4px solid #00d4ff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .45);
+}
+
+.cabecera img {
+    width: 95px;
+    margin-bottom: 10px;
+}
+
+.cabecera h1 {
+    font-size: 32px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.cabecera p {
+    color: #cfcfcf;
+    font-size: 16px;
+    text-align: center;
+}
+
+main {
+    width: 95%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 25px 0;
+}
+
+.btn-volver {
+    display: inline-block;
+    color: #00d4ff;
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    transition: opacity 0.2s ease;
+}
+
+.btn-volver:hover {
+    opacity: 0.8;
+}
+
+.titulo-seccion {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+.titulo-seccion::after {
+    content: "";
+    display: block;
+    width: 90px;
+    height: 4px;
+    background: #00d4ff;
+    margin: 12px auto 0;
+    border-radius: 20px;
+}
+
+.detalle-pelicula {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    background: #181818;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, .45);
+    margin-bottom: 35px;
+}
+
+.poster {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.poster img {
+    width: 220px;
+    border-radius: 14px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, .55);
+}
+
+.informacion {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.informacion h2 {
+    font-size: 34px;
+}
+
+.informacion b {
+    font-size: 18px;
+}
+
+.informacion span,
+.informacion p {
+    font-size: 18px;
+    color: #d8d8d8;
+    line-height: 1.6;
+}
+
+.estreno {
+    display: inline-block;
+    background: #ff3b3b;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    width: max-content;
+}
+
+.lista-horarios {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 20px;
+}
+
+.btn-horario {
+    background: #00d4ff;
+    color: #111111;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.btn-horario:hover {
+    background: #ff3b3b;
+    color: white;
+    transform: translateY(-4px);
+}
+
+@media(min-width: 768px) {
+    .detalle-pelicula {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .poster {
+        width: 280px;
+        flex-shrink: 0;
+    }
+
+    .poster img {
+        width: 100%;
+    }
+
+    .lista-horarios {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(min-width: 1100px) {
+    .cabecera img {
+        width: 110px;
+    }
+
+    .cabecera h1 {
+        font-size: 42px;
+    }
+
+    .poster {
+        width: 320px;
+    }
+}

@@ -1,331 +1,344 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
+/* ==========================================
+   RESET Y ESTILOS GENERALES
+   ========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-background:#121212;
-color:#ffffff;
-font-family:Arial,Helvetica,sans-serif;
-min-height:100vh;
-padding-bottom:100px;
+body {
+    background: #121212;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+    padding-bottom: 100px;
 }
 
-.cabecera{
-background:#1b1b1b;
-padding:20px;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-border-bottom:4px solid #00d4ff;
-box-shadow:0 4px 12px rgba(0,0,0,.45);
+/* ==========================================
+   CABECERA Y SECCIONES
+   ========================================== */
+.cabecera {
+    background: #1b1b1b;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 4px solid #00d4ff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
 }
 
-.cabecera img{
-width:95px;
-margin-bottom:10px;
+.cabecera img {
+    width: 95px;
+    margin-bottom: 10px;
 }
 
-.cabecera h1{
-font-size:32px;
-letter-spacing:2px;
-margin-bottom:8px;
+.cabecera h1 {
+    font-size: 32px;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
 }
 
-.cabecera p{
-color:#cfcfcf;
-font-size:16px;
-text-align:center;
+.cabecera p {
+    color: #cfcfcf;
+    font-size: 16px;
+    text-align: center;
 }
 
-main{
-width:95%;
-max-width:1200px;
-margin:auto;
-padding:25px 0;
+main {
+    width: 95%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 25px 0;
 }
 
-.titulo-seccion{
-text-align:center;
-font-size:32px;
-margin-bottom:30px;
-letter-spacing:1px;
+.titulo-seccion {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
 }
 
-.titulo-seccion::after{
-content:"";
-display:block;
-width:90px;
-height:4px;
-background:#00d4ff;
-margin:12px auto 0;
-border-radius:20px;
+.titulo-seccion::after {
+    content: "";
+    display: block;
+    width: 90px;
+    height: 4px;
+    background: #00d4ff;
+    margin: 12px auto 0;
+    border-radius: 20px;
 }
 
-.grid-peliculas{
-display:grid;
-grid-template-columns:repeat(3, 1fr);
-gap:15px;
+/* ==========================================
+   CARTELERA Y TARJETAS DE PELICULAS
+   ========================================== */
+.grid-peliculas {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
 }
 
-.tarjeta{
-background:transparent;
-position:relative;
-cursor:pointer;
-transition:.25s;
-display:flex;
-flex-direction:column;
+.tarjeta {
+    background: transparent;
+    position: relative;
+    cursor: pointer;
+    transition: 0.25s;
+    display: flex;
+    flex-direction: column;
 }
 
-.tarjeta:hover{
-transform:translateY(-8px);
+.tarjeta:hover {
+    transform: translateY(-8px);
 }
 
-.tarjeta img{
-width:100%;
-border-radius:12px;
-object-fit:cover;
-aspect-ratio:2/3;
-display:block;
+.tarjeta img {
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+    aspect-ratio: 2/3;
+    display: block;
 }
 
-.tarjeta h3{
-padding:8px 0;
-font-size:13px;
-text-align:center;
-font-weight:normal;
-color:#ffffff;
+.tarjeta h3 {
+    padding: 8px 0;
+    font-size: 13px;
+    text-align: center;
+    font-weight: normal;
+    color: #ffffff;
 }
 
-.etiqueta-estreno{
-position:absolute;
-top:8px;
-left:-5px;
-background:#ff5500;
-padding:4px 15px;
-font-size:10px;
-font-weight:bold;
-transform:rotate(-15deg);
-border-radius:4px;
-z-index:10;
-color:white;
+.etiqueta-estreno {
+    position: absolute;
+    top: 8px;
+    left: -5px;
+    background: #ff5500;
+    padding: 4px 15px;
+    font-size: 10px;
+    font-weight: bold;
+    transform: rotate(-15deg);
+    border-radius: 4px;
+    z-index: 10;
+    color: white;
 }
 
-.detalle-pelicula{
-display:flex;
-flex-direction:column;
-gap:25px;
-background:#181818;
-padding:25px;
-border-radius:18px;
-box-shadow:0 0 15px rgba(0,0,0,.45);
-margin-bottom:35px;
+/* ==========================================
+   DETALLE Y HORARIOS
+   ========================================== */
+.detalle-pelicula {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    background: #181818;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.45);
+    margin-bottom: 35px;
 }
 
-.poster{
-display:flex;
-justify-content:center;
-align-items:flex-start;
+.poster {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
-.poster img{
-width:220px;
-border-radius:14px;
-box-shadow:0 0 20px rgba(0,0,0,.55);
+.poster img {
+    width: 220px;
+    border-radius: 14px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.55);
 }
 
-.informacion{
-display:flex;
-flex-direction:column;
-gap:15px;
+.informacion {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.informacion h2{
-font-size:34px;
+.informacion h2 {
+    font-size: 34px;
 }
 
-.informacion b{
-font-size:18px;
+.informacion b {
+    font-size: 18px;
 }
 
-.informacion span{
-font-size:18px;
-color:#d8d8d8;
+.informacion span,
+.informacion p {
+    font-size: 18px;
+    color: #d8d8d8;
+    line-height: 1.6;
 }
 
-.informacion p{
-font-size:18px;
-line-height:1.6;
-color:#d8d8d8;
+.estreno {
+    display: inline-block;
+    background: #ff3b3b;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    width: max-content;
 }
 
-.estreno{
-display:inline-block;
-background:#ff3b3b;
-padding:8px 18px;
-border-radius:20px;
-font-size:14px;
-font-weight:bold;
-width:max-content;
+.lista-horarios {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 20px;
 }
 
-.lista-horarios{
-display:grid;
-grid-template-columns:1fr;
-gap:18px;
-margin-top:20px;
+.btn-horario {
+    background: #00d4ff;
+    color: #111111;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: 0.25s;
 }
 
-.btn-horario{
-background:#00d4ff;
-color:#111111;
-padding:20px;
-text-align:center;
-font-size:24px;
-font-weight:bold;
-border-radius:14px;
-cursor:pointer;
-transition:.25s;
+.btn-horario:hover {
+    background: #ff3b3b;
+    color: white;
+    transform: translateY(-4px);
 }
 
-.btn-horario:hover{
-background:#ff3b3b;
-color:white;
-transform:translateY(-4px);
+/* ==========================================
+   FORMULARIOS Y ELEMENTOS UI
+   ========================================== */
+button {
+    background: #00d4ff;
+    color: #111111;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.25s;
 }
 
-button{
-background:#00d4ff;
-color:#111111;
-border:none;
-padding:15px;
-border-radius:12px;
-font-size:18px;
-cursor:pointer;
-transition:.25s;
+button:hover {
+    background: #ff3b3b;
+    color: white;
 }
 
-button:hover{
-background:#ff3b3b;
-color:white;
+input {
+    width: 100%;
+    padding: 14px;
+    margin-top: 8px;
+    margin-bottom: 18px;
+    background: #2b2b2b;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
 }
 
-input{
-width:100%;
-padding:14px;
-margin-top:8px;
-margin-bottom:18px;
-background:#2b2b2b;
-color:white;
-border:none;
-border-radius:10px;
-font-size:17px;
+label {
+    font-size: 17px;
 }
 
-label{
-font-size:17px;
+.resumen {
+    background: #181818;
+    padding: 25px;
+    border-radius: 18px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.45);
 }
 
-.resumen{
-background:#181818;
-padding:25px;
-border-radius:18px;
-box-shadow:0 0 15px rgba(0,0,0,.45);
+.ticket {
+    background: white;
+    color: black;
+    padding: 25px;
+    border-radius: 15px;
+    font-size: 18px;
 }
 
-.ticket{
-background:white;
-color:black;
-padding:25px;
-border-radius:15px;
-font-size:18px;
+.pantalla {
+    background: #00d4ff;
+    color: #111111;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 25px;
+    font-size: 20px;
 }
 
-.pantalla{
-background:#00d4ff;
-color:#111111;
-padding:12px;
-border-radius:10px;
-text-align:center;
-font-weight:bold;
-margin-bottom:25px;
-font-size:20px;
-}
-
+/* ==========================================
+   MENU INFERIOR FLOTANTE
+   ========================================== */
 .menu-inferior {
-position: fixed;
-bottom: 20px;
-left: 50%;
-transform: translateX(-50%);
-width: 90%;
-max-width: 350px;
-background: #0a0c10;
-border-radius: 30px;
-display: flex;
-justify-content: space-around;
-align-items: center;
-padding: 8px 15px;
-z-index: 1000;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 350px;
+    background: #0a0c10;
+    border-radius: 30px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 15px;
+    z-index: 1000;
 }
 
 .opcion-menu {
-font-size: 22px;
-color: #777;
-cursor: pointer;
-padding: 10px;
+    font-size: 22px;
+    color: #777;
+    cursor: pointer;
+    padding: 10px;
 }
 
 .opcion-menu.activa {
-background: #7a00ff;
-color: white;
-border-radius: 50%;
-width: 45px;
-height: 45px;
-display: flex;
-align-items: center;
-justify-content: center;
+    background: #7a00ff;
+    color: white;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-@media(min-width:768px){
+/* ==========================================
+   MEDIA QUERIES (RESPONSIVE)
+   ========================================== */
+@media (min-width: 768px) {
+    .detalle-pelicula {
+        flex-direction: row;
+        align-items: flex-start;
+    }
 
-.detalle-pelicula{
-flex-direction:row;
-align-items:flex-start;
+    .poster {
+        width: 280px;
+        flex-shrink: 0;
+    }
+
+    .poster img {
+        width: 100%;
+    }
+
+    .lista-horarios {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-.poster{
-width:280px;
-flex-shrink:0;
-}
+@media (min-width: 1100px) {
+    .grid-peliculas {
+        grid-template-columns: repeat(5, 1fr);
+    }
 
-.poster img{
-width:100%;
-}
+    .cabecera img {
+        width: 110px;
+    }
 
-.lista-horarios{
-grid-template-columns:repeat(2,1fr);
-}
+    .cabecera h1 {
+        font-size: 42px;
+    }
 
-}
-
-@media(min-width:1100px){
-
-.grid-peliculas{
-grid-template-columns:repeat(5,1fr);
-}
-
-.cabecera img{
-width:110px;
-}
-
-.cabecera h1{
-font-size:42px;
-}
-
-.poster{
-width:320px;
-}
-
+    .poster {
+        width: 320px;
+    }
 }

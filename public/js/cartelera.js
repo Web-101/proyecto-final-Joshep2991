@@ -10,7 +10,8 @@ peliculas.forEach(function(pelicula){
 var tarjeta = document.createElement("div");
 tarjeta.className = "tarjeta";
 tarjeta.onclick = function(){
-window.location.href = "Funciones.html?id=" + pelicula.id;
+// Corregido con la barra diagonal inicial para que apunte a la ruta raiz del servidor
+window.location.href = "/Funciones.html?id=" + pelicula.id;
 };
 
 var imagen = document.createElement("img");

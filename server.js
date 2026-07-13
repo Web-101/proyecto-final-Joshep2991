@@ -20,7 +20,7 @@ const tipos = {
 
 const servidor = http.createServer(async function(req,res){
     let ruta = url.parse(req.url,true);
-    console.log(`[${req.method}] ${ruta.pathname}`); // Log de todas las peticiones
+    console.log(`[${req.method}] ${ruta.pathname}`);
 
     // GET /api/peliculas
     if(ruta.pathname==="/api/peliculas" && req.method==="GET"){
@@ -101,7 +101,7 @@ const servidor = http.createServer(async function(req,res){
         return;
     }
 
-    // POST /api/reservar (CORREGIDO)
+    // POST /api/reservar
     if(ruta.pathname === "/api/reservar" && req.method === "POST") {
         let decoder = new StringDecoder("utf8");
         let datos = "";
@@ -112,56 +112,34 @@ const servidor = http.createServer(async function(req,res){
 
         req.on("end", async function () {
             datos += decoder.end();
-            console.log("Datos recibidos en /api/reservar:", datos); // Log
+            console.log("Datos recibidos en /api/reservar:", datos);
 
             try {
                 let reserva = JSON.parse(datos);
-                console.log("Reserva parseada:", reserva);
-
-                // Verificar que la función existe
                 let funcion = await pool.query(
                     "SELECT id FROM funciones WHERE id = $1",
                     [reserva.idFuncion]
                 );
 
                 if(funcion.rows.length === 0){
-                    console.log("Función no encontrada");
                     res.writeHead(404);
-                    res.end(JSON.stringify({ correcto: false, mensaje: "Función no encontrada" }));
+                    res.end(JSON.stringify({ correcto: false, mensaje: "Funcion no encontrada" }));
                     return;
                 }
 
                 let idFuncion = funcion.rows[0].id;
-
-                // Insertar la reserva
                 let resultado = await pool.query(
                     `INSERT INTO reservas (id_funcion, nombre, correo, telefono)
                      VALUES ($1, $2, $3, $4) RETURNING id`,
-                    [
-                        idFuncion,
-                        reserva.nombre,
-                        reserva.correo,
-                        reserva.telefono || ''
-                    ]
+                    [idFuncion, reserva.nombre, reserva.correo, reserva.telefono || '']
                 );
-                console.log("Reserva insertada con ID:", resultado.rows[0].id);
 
-                // Actualizar asientos
                 for (let i = 0; i < reserva.asientos.length; i++) {
                     await pool.query(
-                        `UPDATE asientos
-                         SET ocupado = true
-                         WHERE id_funcion = $1
-                         AND fila = $2
-                         AND columna = $3`,
-                        [
-                            idFuncion,
-                            reserva.asientos[i].fila + 1,
-                            reserva.asientos[i].columna + 1
-                        ]
+                        `UPDATE asientos SET ocupado = true WHERE id_funcion = $1 AND fila = $2 AND columna = $3`,
+                        [idFuncion, reserva.asientos[i].fila + 1, reserva.asientos[i].columna + 1]
                     );
                 }
-                console.log("Asientos actualizados");
 
                 res.writeHead(200, { "Content-Type": "application/json" });
                 res.end(JSON.stringify({ correcto: true }));
@@ -175,15 +153,23 @@ const servidor = http.createServer(async function(req,res){
         return;
     }
 
-    // Servir archivos estáticos
+    // Resolucion automatica de rutas estaticas (HTML, CSS, JS, Imagenes)
     let archivo;
-    if (ruta.pathname === "/") {
-        archivo = path.join(__dirname, "public", "Index.html");
+    let rutaArchivo = decodeURIComponent(ruta.pathname);
+    if (rutaArchivo.startsWith("/")) {
+        rutaArchivo = rutaArchivo.substring(1);
+    }
+
+    if (rutaArchivo === "" || rutaArchivo === "/") {
+        archivo = path.join(__dirname, "public", "html", "Index.html");
+    } else if (path.extname(rutaArchivo) === ".html") {
+        // Si piden un HTML, buscarlo en la subcarpeta html/
+        archivo = path.join(__dirname, "public", "html", path.basename(rutaArchivo));
+    } else if (path.extname(rutaArchivo) === ".css") {
+        // Si piden un CSS, buscarlo en la subcarpeta css/
+        archivo = path.join(__dirname, "public", "css", path.basename(rutaArchivo));
     } else {
-        let rutaArchivo = decodeURIComponent(ruta.pathname);
-        if (rutaArchivo.startsWith("/")) {
-            rutaArchivo = rutaArchivo.substring(1);
-        }
+        // Para JS, imagenes, etc., buscar normal en public/
         archivo = path.join(__dirname, "public", rutaArchivo);
     }
 
